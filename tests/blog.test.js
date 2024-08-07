@@ -107,3 +107,24 @@ describe('Favorite BLog', () => {
         })
     })
 })
+
+describe('most BLogs', () => {
+    test("Bigger list right blog", () => {
+        assert.deepStrictEqual(list_helper.mostBlogs(blogs), {
+            author: 'Robert C. Martin',
+            blogs: 3,
+        })
+    });
+
+    test("Empty blog list", () => {
+        assert.deepStrictEqual(list_helper.mostBlogs([]), {});
+    })
+
+    test("One element list", () => {
+        assert.deepStrictEqual(list_helper.mostBlogs(oneEleBlog), {
+            author: "Edsger W. Dijkstra",
+            blogs: 1,
+
+        })
+    })
+})
