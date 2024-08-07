@@ -51,9 +51,29 @@ const mostBlogs = (blogs) => {
 
 }
 
+const mostlikes = (blogs) => {
+    if (blogs.length === 0) {
+        return {};
+    }
+
+    const mostlikesArr = blogs.reduce((acc, blog) => {
+        const id = acc.findIndex(blo => blo.author === blog.author)
+        if (id !== -1) {
+            acc[id].likes += blog.likes
+            return acc
+        } else {
+            acc.push({ author: blog.author, likes: blog.likes })
+            return acc;
+        }
+    }, [])
+
+    return lodash.sortBy(mostlikesArr, ['likes'])[mostlikesArr.length - 1];
+
+}
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostlikes
 }

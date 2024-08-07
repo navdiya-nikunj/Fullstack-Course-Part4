@@ -128,3 +128,23 @@ describe('most BLogs', () => {
         })
     })
 })
+
+describe('most Likes', () => {
+    test("Bigger list right blog", () => {
+        assert.deepStrictEqual(list_helper.mostlikes(blogs), {
+            author: 'Edsger W. Dijkstra',
+            likes: 17,
+        })
+    });
+
+    test("Empty blog list", () => {
+        assert.deepStrictEqual(list_helper.mostlikes([]), {});
+    })
+
+    test("One element list", () => {
+        assert.deepStrictEqual(list_helper.mostlikes(oneEleBlog), {
+            author: "Edsger W. Dijkstra",
+            likes: 5,
+        })
+    })
+})
