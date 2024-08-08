@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const testHelper = require('./test_helper');
-const Blog = require('../models/blog')
+const Blog = require('../models/blog');
+const { title } = require('node:process');
 
 const api = supertest(app);
 
@@ -59,7 +60,7 @@ describe.only("Post route tests", () => {
 
     })
 
-    test.only("Likes default to 0", async () => {
+    test("Likes default to 0", async () => {
         const newblog = {
             title: "Anthing",
             author: "anyone",
@@ -67,6 +68,22 @@ describe.only("Post route tests", () => {
         }
         const res = await api.post('/api/blogs').send(newblog).expect(201).expect('Content-Type', /application\/json/);
         assert.strictEqual(res.body.likes, 0);
+    })
+
+    test.only("title missing", async () => {
+        const newblog = {
+            author: "anyone",
+            url: "www.anyone.url",
+        }
+        await api.post('/api/blogs').send(newblog).expect(400)
+    })
+    test.only("url missing", async () => {
+        const newblog = {
+            title: "anything",
+            author: "anyone",
+
+        }
+        await api.post('/api/blogs').send(newblog).expect(400)
     })
 })
 
