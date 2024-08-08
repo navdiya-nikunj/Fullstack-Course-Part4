@@ -10,13 +10,10 @@ const api = supertest(app);
 
 beforeEach(async () => {
     await Blog.deleteMany({});
-    console.log('deleted');
     for (let b of testHelper.initialBlogs) {
         const blog = new Blog(b);
         await blog.save()
-        console.log("save");
     }
-    console.log("saved");
 })
 
 describe.only("Get Route", () => {
@@ -32,6 +29,12 @@ describe.only("Get Route", () => {
         const res = await api.get('/api/blogs');
         assert.strictEqual(res.body.length, testHelper.initialBlogs.length);
         console.log("res done")
+    })
+
+    test.only("id property for blogs exists", async () => {
+        const res = await api.get('/api/blogs');
+        const idExists = res.body.every(blog => Object.keys(blog).includes('id'));
+        assert(idExists);
     })
 })
 
