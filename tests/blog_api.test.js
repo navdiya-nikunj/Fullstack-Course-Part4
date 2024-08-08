@@ -41,7 +41,7 @@ describe("Get Route", () => {
 describe.only("Post route tests", () => {
 
 
-    test.only("new valid post added", async () => {
+    test("new valid post added", async () => {
         const newblog = {
             title: "Anthing",
             author: "anyone",
@@ -57,6 +57,16 @@ describe.only("Post route tests", () => {
         const addedblog = res.body;
         assert.deepStrictEqual(addedblog, newblog)
 
+    })
+
+    test.only("Likes default to 0", async () => {
+        const newblog = {
+            title: "Anthing",
+            author: "anyone",
+            url: "www.anyone.url",
+        }
+        const res = await api.post('/api/blogs').send(newblog).expect(201).expect('Content-Type', /application\/json/);
+        assert.strictEqual(res.body.likes, 0);
     })
 })
 
