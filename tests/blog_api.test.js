@@ -39,7 +39,7 @@ describe("Get Route", () => {
     })
 })
 
-describe.only("Post route tests", () => {
+describe("Post route tests", () => {
 
 
     test("new valid post added", async () => {
@@ -70,20 +70,40 @@ describe.only("Post route tests", () => {
         assert.strictEqual(res.body.likes, 0);
     })
 
-    test.only("title missing", async () => {
+    test("title missing", async () => {
         const newblog = {
             author: "anyone",
             url: "www.anyone.url",
         }
         await api.post('/api/blogs').send(newblog).expect(400)
     })
-    test.only("url missing", async () => {
+    test("url missing", async () => {
         const newblog = {
             title: "anything",
             author: "anyone",
 
         }
         await api.post('/api/blogs').send(newblog).expect(400)
+    })
+})
+
+describe.only('Delete the blog', () => {
+    test("valid id delete", async () => {
+        const blogsBeforeDelete = await testHelper.blogsInDb();
+        const blogToDelete = blogsBeforeDelete[0];
+
+        await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+        const blogsAfterDelete = await testHelper.blogsInDb();
+        assert.strictEqual(blogsAfterDelete.length, testHelper.initialBlogs.length - 1);
+
+        const blogs = blogsAfterDelete.map(blog => blog.title);
+        assert(!blogs.includes(blogToDelete.title));
+    })
+
+    test.only("invalid id", async () => {
+        const invalidId = testHelper.invalidId;
+        await api.delete(`/api/blogs/${invalidId}`).expect(400);
     })
 })
 
