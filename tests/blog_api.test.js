@@ -87,7 +87,7 @@ describe("Post route tests", () => {
     })
 })
 
-describe.only('Delete the blog', () => {
+describe('Delete the blog', () => {
     test("valid id delete", async () => {
         const blogsBeforeDelete = await testHelper.blogsInDb();
         const blogToDelete = blogsBeforeDelete[0];
@@ -101,9 +101,22 @@ describe.only('Delete the blog', () => {
         assert(!blogs.includes(blogToDelete.title));
     })
 
-    test.only("invalid id", async () => {
+    test("invalid id", async () => {
         const invalidId = testHelper.invalidId;
         await api.delete(`/api/blogs/${invalidId}`).expect(400);
+    })
+})
+
+describe.only("put route", () => {
+    test.only("valid id info update", async () => {
+        const blogsBefore = await testHelper.blogsInDb();
+        const blogtoUpdateId = blogsBefore[0].id;
+        const blogToUpdate = {
+            likes: 41
+        }
+        const res1 = await api.put(`/api/blogs/${blogtoUpdateId}`).send(blogToUpdate).expect(201);
+        const res2 = await api.get(`/api/blogs/${blogtoUpdateId}`).expect(200);
+        assert.deepStrictEqual(res1.body, res2.body);
     })
 })
 
