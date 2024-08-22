@@ -107,8 +107,8 @@ describe('Delete the blog', () => {
     })
 })
 
-describe.only("put route", () => {
-    test.only("valid id info update", async () => {
+describe("put route", () => {
+    test("valid id info update", async () => {
         const blogsBefore = await testHelper.blogsInDb();
         const blogtoUpdateId = blogsBefore[0].id;
         const blogToUpdate = {
