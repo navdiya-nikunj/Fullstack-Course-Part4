@@ -20,8 +20,8 @@ beforeEach(async () => {
     await initalUser.save();
 })
 
-describe.only('adding user', () => {
-    test.only('empty username', async () => {
+describe('adding user', () => {
+    test('empty username', async () => {
         const user = {
             name: "krip",
             password: "afirersd"
@@ -29,7 +29,7 @@ describe.only('adding user', () => {
         await api.post('/blogApp/api/users').send(user).expect(400);
     })
 
-    test.only('short username', async () => {
+    test('short username', async () => {
         const user = {
             name: 'krip',
             username: "pr",
@@ -37,7 +37,7 @@ describe.only('adding user', () => {
         }
         await api.post('/blogApp/api/users').send(user).expect(400);
     })
-    test.only('short password', async () => {
+    test('short password', async () => {
         const user = {
             name: 'krip',
             username: "prfrg",
@@ -45,7 +45,7 @@ describe.only('adding user', () => {
         }
         await api.post('/blogApp/api/users').send(user).expect(400);
     })
-    test.only('username exists', async () => {
+    test('username exists', async () => {
         const user = {
             name: "krip",
             username: 'dontknow',

@@ -5,7 +5,6 @@ const User = require('../models/user');
 
 loginRouter.post('/', async (req, res, next) => {
     const { username, password } = req.body;
-    console.log(username);
     try {
         const user = await User.findOne({ username: username });
         // console.log(user);

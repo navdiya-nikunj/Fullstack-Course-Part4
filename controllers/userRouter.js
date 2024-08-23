@@ -21,6 +21,7 @@ userRouter.post('/', async (req, res, next) => {
         const addeduser = await newUser.save();
         res.status(201).json(addeduser);
     } catch (e) {
+        console.log(e);
         next(e);
     }
 })

@@ -6,15 +6,30 @@ const app = require('../app');
 const testHelper = require('./test_helper');
 const Blog = require('../models/blog');
 const { title } = require('node:process');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
 const api = supertest(app);
 
+let token;
+let userid;
 beforeEach(async () => {
     await Blog.deleteMany({});
+    await User.deleteMany({});
     for (let b of testHelper.initialBlogs) {
         const blog = new Blog(b);
         await blog.save()
     }
+    const user = {
+        name: "test",
+        username: 'test1',
+        password: 'test1'
+    }
+    await api.post('/api/users').send(user).expect(201);
+    const re = await api.post('/api/login').send({ username: user.username, password: user.password }).expect(200);
+    token = re.body.token;
+    userid = jwt.verify(token, process.env.SECRET).id;
+
 })
 
 describe("Get Route", () => {
@@ -39,10 +54,10 @@ describe("Get Route", () => {
     })
 })
 
-describe("Post route tests", () => {
+describe.only("Post route tests", async () => {
 
+    test.only("new valid post added", async () => {
 
-    test("new valid post added", async () => {
         const newblog = {
             title: "Anthing",
             author: "anyone",
@@ -50,41 +65,54 @@ describe("Post route tests", () => {
             likes: 20
         }
 
-        const res = await api.post('/api/blogs').send(newblog).expect(201).expect('Content-Type', /application\/json/);
+        const res = await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newblog).expect(201).expect('Content-Type', /application\/json/);
 
         const blogsInDb = await testHelper.blogsInDb();
         assert(blogsInDb.length, testHelper.initialBlogs.length + 1);
         delete res.body.id;
         const addedblog = res.body;
-        assert.deepStrictEqual(addedblog, newblog)
+        assert.deepStrictEqual(addedblog, { ...newblog, user: userid });
 
     })
 
-    test("Likes default to 0", async () => {
+    test.only("Likes default to 0", async () => {
         const newblog = {
             title: "Anthing",
             author: "anyone",
             url: "www.anyone.url",
         }
-        const res = await api.post('/api/blogs').send(newblog).expect(201).expect('Content-Type', /application\/json/);
+        const res = await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newblog).expect(201).expect('Content-Type', /application\/json/);
         assert.strictEqual(res.body.likes, 0);
     })
 
-    test("title missing", async () => {
+    test.only("title missing", async () => {
         const newblog = {
             author: "anyone",
             url: "www.anyone.url",
         }
-        await api.post('/api/blogs').send(newblog).expect(400)
+        await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newblog).expect(400)
     })
-    test("url missing", async () => {
+    test.only("url missing", async () => {
         const newblog = {
             title: "anything",
             author: "anyone",
 
         }
-        await api.post('/api/blogs').send(newblog).expect(400)
+        await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newblog).expect(400)
     })
+
+    test.only("invalid token", async () => {
+        const newblog = {
+            title: "Anthing",
+            author: "anyone",
+            url: "www.anyone.url",
+            likes: 20
+        }
+
+        await api.post('/api/blogs').send(newblog).expect(401);
+
+    })
+
 })
 
 describe('Delete the blog', () => {

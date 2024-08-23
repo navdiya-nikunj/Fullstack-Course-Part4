@@ -14,17 +14,20 @@ blogRouter.post('/', async (req, res, next) => {
 
     try {
         let blog;
+        console.log(req.user.id);
         const user = await User.findById(req.user.id);
+        console.log(user);
         if (Object.keys(req.body).includes('likes')) {
-            blog = new Blog({ ...req.body, user: user.id });
+            blog = new Blog({ ...req.body, user: req.user.id });
         } else {
-            blog = new Blog({ ...req.body, likes: 0, user: user.id })
+            blog = new Blog({ ...req.body, likes: 0, user: req.user.id })
         }
         const addedblog = await blog.save();
         user.blogs = user.blogs.concat(addedblog.id);
         await user.save();
         res.status(201).json(addedblog);
     } catch (error) {
+        console.log(error);
         next(error);
     }
 
