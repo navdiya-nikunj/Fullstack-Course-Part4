@@ -40,11 +40,15 @@ blogRouter.delete('/:id', async (req, res, next) => {
     const id = req.params.id;
 
     try {
-        const blog = await Blog.findByIdAndDelete(id);
-        res.status(204).json(blog);
+        const blog = await Blog.findById(id);
+        const decodetoken = jwt.verify(req.token, process.env.SECRET);
+        if (blog.user.toString() !== decodetoken.id.toString()) {
+            res.status(400).json({ error: "unauthorized action" })
+        }
+        const deletedBlog = await Blog.findByIdAndDelete(id);
+        res.status(204).json(deletedBlog);
     }
     catch (e) {
-        console.log(e);
         next(e);
     }
 })
