@@ -23,6 +23,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('dist'));
 app.use('/api/blogs', blogRouter);
-app.use('/blogApp/api/users', userRouter);
+app.use('/api/users', userRouter);
 app.use(errorHandler);
 module.exports = app;

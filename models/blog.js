@@ -10,7 +10,11 @@ const blogSchems = new mongoose.Schema({
         type: String,
         required: true
     },
-    likes: Number
+    likes: Number,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "BlogUser"
+    }
 })
 
 blogSchems.set('toJSON', {
