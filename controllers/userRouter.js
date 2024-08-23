@@ -14,7 +14,8 @@ userRouter.post('/', async (req, res, next) => {
         const newUser = new User({
             name: body.name,
             username: body.username,
-            hashedPassword: hash
+            hashedPassword: hash,
+            blogs: [],
         })
         await User.init();
         const addeduser = await newUser.save();
