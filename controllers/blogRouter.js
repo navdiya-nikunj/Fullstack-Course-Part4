@@ -37,7 +37,7 @@ blogRouter.delete('/:id', async (req, res, next) => {
 
     try {
         const blog = await Blog.findByIdAndDelete(id);
-        res.send(204).json(blog);
+        res.status(204).json(blog);
     }
     catch (e) {
         console.log(e);
@@ -58,7 +58,7 @@ blogRouter.put('/:id', async (req, res, next) => {
         }
 
         const updatedBlog = await Blog.findByIdAndUpdate(id, blogToUpdate, { new: true });
-        res.send(201).json(updatedBlog);
+        res.status(201).json(updatedBlog);
     } catch (e) {
         next(e);
     }
@@ -69,7 +69,7 @@ blogRouter.put('/:id', async (req, res, next) => {
 blogRouter.get('/:id', async (req, res, next) => {
     try {
         const blog = await Blog.findById(req.params.id).populate('BlogUser');
-        res.send(200).json(blog);
+        res.status(200).json(blog);
     } catch (e) {
         next(e);
     }

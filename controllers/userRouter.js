@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 userRouter.post('/', async (req, res, next) => {
     const body = req.body;
     if (body.password.length < 3) {
-        res.send(400).json({ error: "password must be at least 3 characters" }).end()
+        res.status(400).json({ error: "password must be at least 3 characters" }).end()
     }
 
     try {
@@ -18,7 +18,7 @@ userRouter.post('/', async (req, res, next) => {
         })
         await User.init();
         const addeduser = await newUser.save();
-        res.send(201).json(addeduser);
+        res.status(201).json(addeduser);
     } catch (e) {
         next(e);
     }
