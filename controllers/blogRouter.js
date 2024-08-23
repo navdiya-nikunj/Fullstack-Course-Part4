@@ -14,12 +14,7 @@ blogRouter.post('/', async (req, res, next) => {
 
     try {
         let blog;
-        const decodetoken = jwt.verify(req.token, process.env.SECRET);
-        if (!decodetoken.id) {
-            res.status(401).json({ error: 'token invalid' })
-        }
-        const user = await User.findById(decodetoken.id);
-        console.log(user);
+        const user = await User.findById(req.user.id);
         if (Object.keys(req.body).includes('likes')) {
             blog = new Blog({ ...req.body, user: user.id });
         } else {
@@ -41,8 +36,8 @@ blogRouter.delete('/:id', async (req, res, next) => {
 
     try {
         const blog = await Blog.findById(id);
-        const decodetoken = jwt.verify(req.token, process.env.SECRET);
-        if (blog.user.toString() !== decodetoken.id.toString()) {
+
+        if (blog.user.toString() !== req.user.id.toString()) {
             res.status(400).json({ error: "unauthorized action" })
         }
         const deletedBlog = await Blog.findByIdAndDelete(id);

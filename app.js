@@ -10,6 +10,7 @@ const userRouter = require('./controllers/userRouter');
 const loginRouter = require('./controllers/login');
 const mongoose = require('mongoose');
 const tokenExtractor = require('./middlewhere/tokenExtractor');
+const userExtractor = require('./middlewhere/userExtractor');
 
 mongoose.set('strictQuery', false);
 
@@ -26,7 +27,7 @@ app.use(express.json());
 app.use(express.static('dist'));
 app.use(tokenExtractor);
 app.use('/api/login', loginRouter)
-app.use('/api/blogs', blogRouter);
+app.use('/api/blogs', userExtractor, blogRouter);
 app.use('/api/users', userRouter);
 app.use(errorHandler);
 module.exports = app;
