@@ -9,6 +9,7 @@ const errorHandler = require('./middlewhere/errorMiddlewhere')
 const userRouter = require('./controllers/userRouter');
 const loginRouter = require('./controllers/login');
 const mongoose = require('mongoose');
+const tokenExtractor = require('./middlewhere/tokenExtractor');
 
 mongoose.set('strictQuery', false);
 
@@ -23,6 +24,7 @@ mongoose.connect(config.MONGO_URI).then(() => {
 app.use(cors());
 app.use(express.json());
 app.use(express.static('dist'));
+app.use(tokenExtractor);
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogRouter);
 app.use('/api/users', userRouter);
