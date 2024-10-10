@@ -11,6 +11,7 @@ const loginRouter = require('./controllers/login');
 const mongoose = require('mongoose');
 const tokenExtractor = require('./middlewhere/tokenExtractor');
 const userExtractor = require('./middlewhere/userExtractor');
+const testRouter = require('./controllers/testRouter');
 
 mongoose.set('strictQuery', false);
 
@@ -29,5 +30,9 @@ app.use(tokenExtractor);
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', userExtractor, blogRouter);
 app.use('/api/users', userRouter);
+
+if (process.env.NODE_ENV === 'test') {
+    app.use('/api/testing', testRouter);
+}
 app.use(errorHandler);
 module.exports = app;
