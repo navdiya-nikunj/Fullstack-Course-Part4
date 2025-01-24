@@ -11,6 +11,10 @@ const blogSchems = new mongoose.Schema({
         required: true
     },
     likes: Number,
+    comments: {
+        type: Array,
+        required: false
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "BlogUser"

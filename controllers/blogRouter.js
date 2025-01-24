@@ -11,7 +11,6 @@ blogRouter.get('/', async (req, res) => {
 });
 
 blogRouter.post('/', async (req, res, next) => {
-
     try {
         let blog;
         console.log(req.user.id);
@@ -20,7 +19,7 @@ blogRouter.post('/', async (req, res, next) => {
         if (Object.keys(req.body).includes('likes')) {
             blog = new Blog({ ...req.body, user: req.user.id });
         } else {
-            blog = new Blog({ ...req.body, likes: 0, user: req.user.id })
+            blog = new Blog({ ...req.body, likes: 0, comments: [], user: req.user.id })
         }
         const addedblog = await blog.save();
         user.blogs = user.blogs.concat(addedblog.id);
@@ -30,8 +29,6 @@ blogRouter.post('/', async (req, res, next) => {
         console.log(error);
         next(error);
     }
-
-
 })
 
 blogRouter.delete('/:id', async (req, res, next) => {
@@ -39,11 +36,12 @@ blogRouter.delete('/:id', async (req, res, next) => {
 
     try {
         const blog = await Blog.findById(id);
-
+        console.log(blog);
         if (blog.user.toString() !== req.user.id.toString()) {
             res.status(400).json({ error: "unauthorized action" })
         }
         const deletedBlog = await Blog.findByIdAndDelete(id);
+        console.log(deletedBlog);
         res.status(204).json(deletedBlog);
     }
     catch (e) {
@@ -60,21 +58,19 @@ blogRouter.put('/:id', async (req, res, next) => {
             title: body.title || blog.title,
             author: body.author || blog.author,
             url: body.url || blog.url,
-            likes: body.likes || blog.likes
+            likes: body.likes || blog.likes,
+            comments: body.comments || blog.comments
         }
-
         const updatedBlog = await Blog.findByIdAndUpdate(id, blogToUpdate, { new: true });
         res.status(201).json(updatedBlog);
     } catch (e) {
         next(e);
     }
-
-
 })
 
 blogRouter.get('/:id', async (req, res, next) => {
     try {
-        const blog = await Blog.findById(req.params.id).populate('BlogUser');
+        const blog = await Blog.findById(req.params.id);
         res.status(200).json(blog);
     } catch (e) {
         next(e);

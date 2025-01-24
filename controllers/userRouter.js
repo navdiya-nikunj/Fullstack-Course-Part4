@@ -35,4 +35,14 @@ userRouter.get('/', async (req, res, next) => {
     }
 })
 
+userRouter.get('/:id', async (req, res, next) => {
+    try {
+        const userId = req.params.id;
+        const user = await User.findById(userId).populate('blogs');
+        res.json(user);
+    } catch (e) {
+        next(e);
+    }
+})
+
 module.exports = userRouter;
